@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: odoo_osi
+      POSTGRES_USER: odoo_osi
+      POSTGRES_PASSWORD: odoo_osi
+    ports:
+      - "55432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo_osi -d odoo_osi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      ODOO_OSI_DATABASE_URL: postgresql+asyncpg://odoo_osi:odoo_osi@postgres:5432/odoo_osi
+      ODOO_OSI_REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["uvicorn", "odoo_osi.api.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+
+volumes:
+  postgres_data:

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "odoo-community": {
+      "command": "/Users/krishna/LiveWorkSpace/ocamcp/.venv/bin/odoo-osi",
+      "args": ["run-mcp"],
+      "cwd": "/Users/krishna/LiveWorkSpace/ocamcp"
+    }
+  }
+}
+

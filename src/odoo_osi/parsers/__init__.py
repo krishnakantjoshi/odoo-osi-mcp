@@ -1,0 +1,2 @@
+"""Odoo-aware parser package."""
+
