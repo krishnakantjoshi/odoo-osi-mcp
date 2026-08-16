@@ -1,5 +1,9 @@
 .env
+.env.*
+!.env.example
+mcp.json
 .venv/
+.serena/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -10,5 +14,7 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+*.db
+*.sqlite
+*.sqlite3
 .DS_Store
-

@@ -2,7 +2,12 @@
 
 Odoo Open Source Intelligence, or Odoo OSI, is an enterprise-grade platform for discovering, evaluating, comparing, and recommending open-source Odoo modules before teams write custom code.
 
-The AI-facing interface is **Odoo Community MCP**, an MCP server that lets coding agents search and inspect indexed OCA and trusted open-source Odoo repositories.
+The AI-facing interface is **Odoo OSI MCP**, an unofficial MCP server that lets coding
+agents search and inspect indexed OCA and trusted open-source Odoo repositories.
+
+Odoo OSI is not affiliated with, endorsed by, or sponsored by the Odoo Community
+Association (OCA) or Odoo S.A. OCA and Odoo names are used only to identify public
+open-source repositories and ecosystem references.
 
 ## Current Build Stage
 
@@ -34,6 +39,20 @@ alembic upgrade head
 uvicorn odoo_osi.api.app:create_app --factory --reload
 ```
 
+## Local Credentials
+
+Put your GitHub API token for indexing in the local `.env` file:
+
+```bash
+ODOO_OSI_GITHUB_TOKEN=YOUR_GITHUB_TOKEN
+```
+
+`.env` is ignored by git. If your MCP client uses a private `mcp.json`, that file is ignored too.
+Do not put real tokens in `mcp.json.example`, docs, tests, or committed source.
+
+For git push/pull access, keep your SSH key outside the repo, usually in `~/.ssh`, and add the
+public key to your Git hosting provider.
+
 The health endpoint is available at:
 
 ```text
@@ -60,4 +79,11 @@ See [docs/ingestion.md](docs/ingestion.md) for GitHub token setup and indexing c
 
 ## MCP
 
-See [docs/mcp.md](docs/mcp.md) for the Odoo Community MCP server commands and tools.
+See [docs/mcp.md](docs/mcp.md) for the Odoo OSI MCP server commands and tools.
+
+## Project Status And Notices
+
+- This project is unofficial; see [NOTICE.md](NOTICE.md).
+- Contributions are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
+- Security reporting and credential guidance are in [SECURITY.md](SECURITY.md).
+- Privacy and hosted deployment notes are in [PRIVACY.md](PRIVACY.md).

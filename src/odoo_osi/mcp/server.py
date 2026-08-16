@@ -15,7 +15,7 @@ from odoo_osi.mcp.services import (
 
 
 def create_mcp_server() -> Any:
-    """Create the Odoo Community MCP server.
+    """Create the Odoo OSI MCP server.
 
     The concrete MCP tool registration will be added after the search services are wired.
     Keeping this factory isolated lets the HTTP API and MCP transport evolve independently.
@@ -26,9 +26,12 @@ def create_mcp_server() -> Any:
         raise RuntimeError("Install the 'mcp' optional dependency to run the MCP server") from exc
 
     server = MCPServer(
-        name="odoo-community-mcp",
-        title="Odoo Community MCP",
-        description="Search and inspect indexed OCA and open-source Odoo modules.",
+        name="odoo-osi-mcp",
+        title="Odoo OSI MCP",
+        description=(
+            "Unofficial search and inspection server for indexed OCA and "
+            "open-source Odoo modules."
+        ),
         version="0.1.0",
     )
 

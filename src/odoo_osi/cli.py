@@ -52,7 +52,7 @@ def run_mcp(
     host: str = typer.Option("127.0.0.1", help="Host for HTTP transports."),
     port: int = typer.Option(8765, help="Port for HTTP transports."),
 ) -> None:
-    """Run the Odoo Community MCP server."""
+    """Run the Odoo OSI MCP server."""
     if transport not in {"stdio", "sse", "streamable-http"}:
         raise typer.BadParameter("transport must be stdio, sse, or streamable-http")
 

@@ -9,7 +9,7 @@ Short name: **Odoo OSI**
 
 ### Technical Interface
 
-**Odoo Community MCP**
+**Odoo OSI MCP**
 
 ### Product Goal
 

@@ -1,6 +1,10 @@
-# Odoo Community MCP
+# Odoo OSI MCP
 
 The MCP server exposes the indexed Odoo OSI knowledge base to AI coding agents.
+
+This is an unofficial project. It is not affiliated with, endorsed by, or sponsored by
+the Odoo Community Association (OCA) or Odoo S.A. OCA and Odoo names are used only to
+identify public open-source repositories and ecosystem references.
 
 ## Run With stdio
 
@@ -93,9 +97,9 @@ Most MCP clients accept a stdio server configuration similar to this:
 {
   "mcpServers": {
     "odoo-osi": {
-      "command": "/absolute/path/to/ocamcp/.venv/bin/odoo-osi",
+      "command": "/absolute/path/to/odoo-osi-mcp/.venv/bin/odoo-osi",
       "args": ["run-mcp"],
-      "cwd": "/absolute/path/to/ocamcp",
+      "cwd": "/absolute/path/to/odoo-osi-mcp",
       "env": {
         "ODOO_OSI_GITHUB_TOKEN": "REPLACE_WITH_YOUR_OWN_GITHUB_TOKEN"
       }
@@ -145,9 +149,9 @@ docker compose up -d postgres redis
 {
   "mcpServers": {
     "odoo-osi": {
-      "command": "/absolute/path/to/ocamcp/.venv/bin/odoo-osi",
+      "command": "/absolute/path/to/odoo-osi-mcp/.venv/bin/odoo-osi",
       "args": ["run-mcp"],
-      "cwd": "/absolute/path/to/ocamcp",
+      "cwd": "/absolute/path/to/odoo-osi-mcp",
       "env": {
         "ODOO_OSI_GITHUB_TOKEN": "REPLACE_WITH_YOUR_OWN_GITHUB_TOKEN"
       }
