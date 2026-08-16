@@ -1,10 +1,12 @@
 {
   "mcpServers": {
-    "odoo-community": {
-      "command": "/Users/krishna/LiveWorkSpace/ocamcp/.venv/bin/odoo-osi",
+    "odoo-osi": {
+      "command": "/absolute/path/to/ocamcp/.venv/bin/odoo-osi",
       "args": ["run-mcp"],
-      "cwd": "/Users/krishna/LiveWorkSpace/ocamcp"
+      "cwd": "/absolute/path/to/ocamcp",
+      "env": {
+        "ODOO_OSI_GITHUB_TOKEN": "REPLACE_WITH_YOUR_OWN_GITHUB_TOKEN"
+      }
     }
   }
 }
-

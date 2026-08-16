@@ -27,6 +27,11 @@ odoo-osi run-mcp --transport streamable-http --host 127.0.0.1 --port 8765
 - `search_oca_code`
 - `get_oca_module`
 - `get_module_dependencies`
+- `get_coverage_report`
+
+Use `get_coverage_report` before relying on a "no candidate found" result. It reports local
+indexed counts, source evidence depth, latest indexing jobs, and rough gaps against full
+GitHub discovery or an external module catalog estimate.
 
 ## Smoke Test
 
@@ -87,16 +92,31 @@ Most MCP clients accept a stdio server configuration similar to this:
 ```json
 {
   "mcpServers": {
-    "odoo-community": {
-      "command": "/Users/krishna/LiveWorkSpace/ocamcp/.venv/bin/odoo-osi",
+    "odoo-osi": {
+      "command": "/absolute/path/to/ocamcp/.venv/bin/odoo-osi",
       "args": ["run-mcp"],
-      "cwd": "/Users/krishna/LiveWorkSpace/ocamcp"
+      "cwd": "/absolute/path/to/ocamcp",
+      "env": {
+        "ODOO_OSI_GITHUB_TOKEN": "REPLACE_WITH_YOUR_OWN_GITHUB_TOKEN"
+      }
     }
   }
 }
 ```
 
-Keep `.env` in the project directory so the MCP server can read the database URL and GitHub token.
+Every user must use their own GitHub token. A read-only token for public repositories is enough
+for OCA indexing and fallback search.
+
+If your MCP client supports `env`, put your own `ODOO_OSI_GITHUB_TOKEN` there. Otherwise, keep
+your token in a local `.env` in the project directory:
+
+```bash
+cp .env.example .env
+# edit .env and set ODOO_OSI_GITHUB_TOKEN to your own token
+```
+
+Do not commit real tokens or share one token across users. The MCP server also reads the database
+URL from `.env`.
 
 The same example is available in [../mcp.json.example](../mcp.json.example).
 
@@ -124,10 +144,13 @@ docker compose up -d postgres redis
 ```json
 {
   "mcpServers": {
-    "odoo-community": {
-      "command": "/Users/krishna/LiveWorkSpace/ocamcp/.venv/bin/odoo-osi",
+    "odoo-osi": {
+      "command": "/absolute/path/to/ocamcp/.venv/bin/odoo-osi",
       "args": ["run-mcp"],
-      "cwd": "/Users/krishna/LiveWorkSpace/ocamcp"
+      "cwd": "/absolute/path/to/ocamcp",
+      "env": {
+        "ODOO_OSI_GITHUB_TOKEN": "REPLACE_WITH_YOUR_OWN_GITHUB_TOKEN"
+      }
     }
   }
 }
@@ -138,7 +161,7 @@ docker compose up -d postgres redis
 5. Ask the AI tool:
 
 ```text
-Use the odoo-community MCP server. For Odoo 18, check if there is an existing open-source
+Use the odoo-osi MCP server. For Odoo 18, check if there is an existing open-source
 module for preventing negative inventory. Include exact-version matches and older-version
 migration candidates.
 ```

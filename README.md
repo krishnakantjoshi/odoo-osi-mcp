@@ -25,6 +25,7 @@ This repository now has the first working backend and MCP vertical slice:
 
 ```bash
 cp .env.example .env
+# edit .env and set ODOO_OSI_GITHUB_TOKEN to your own GitHub token
 docker compose up -d postgres redis
 python -m venv .venv
 source .venv/bin/activate

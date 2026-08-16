@@ -12,6 +12,7 @@ from odoo_osi.ingestion.jobs import IndexingJobRecorder
 from odoo_osi.ingestion.persistence import IndexWriter
 from odoo_osi.ingestion.source_indexer import SourceIndexer, SourceIndexOptions
 from odoo_osi.mcp.server import create_mcp_server
+from odoo_osi.search.coverage import coverage_report_payload
 
 app = typer.Typer(help="Odoo Open Source Intelligence command line tools.")
 
@@ -21,6 +22,25 @@ def settings() -> None:
     """Print the active runtime environment."""
     current_settings = get_settings()
     typer.echo(f"environment={current_settings.env}")
+
+
+@app.command("coverage")
+def coverage(
+    owner: str | None = typer.Option(None, help="GitHub organization or owner to report."),
+) -> None:
+    """Print local index coverage, evidence depth, and rough catalog gaps."""
+    asyncio.run(_coverage(owner=owner))
+
+
+async def _coverage(owner: str | None) -> None:
+    settings = get_settings()
+    async with AsyncSessionFactory() as session:
+        payload = await coverage_report_payload(
+            session=session,
+            owner=owner or settings.github_owner,
+            catalog_module_estimate=settings.oca_apps_module_estimate,
+        )
+    typer.echo(json.dumps(payload, indent=2, sort_keys=True))
 
 
 @app.command("run-mcp")
@@ -163,9 +183,21 @@ def discover_oca(
         None,
         help="Only inspect this repository, for example purchase-workflow.",
     ),
-    repo_limit: int | None = typer.Option(3, min=1, help="Maximum repositories to inspect."),
-    branch_limit: int | None = typer.Option(1, min=1, help="Maximum version branches per repo."),
-    module_limit: int | None = typer.Option(10, min=1, help="Maximum modules per branch."),
+    repo_limit: int | None = typer.Option(
+        3,
+        min=0,
+        help="Maximum repositories to inspect. Use 0 for no limit.",
+    ),
+    branch_limit: int | None = typer.Option(
+        1,
+        min=0,
+        help="Maximum version branches per repo. Use 0 for no limit.",
+    ),
+    module_limit: int | None = typer.Option(
+        10,
+        min=0,
+        help="Maximum modules per branch. Use 0 for no limit.",
+    ),
     odoo_version: str | None = typer.Option(None, help="Only inspect this Odoo version branch."),
     include_archived: bool = typer.Option(False, help="Include archived repositories."),
     skip_manifest_parse: bool = typer.Option(False, help="Only discover manifest paths."),
@@ -210,9 +242,9 @@ async def _discover_oca(
         options = DiscoveryOptions(
             owner=owner or settings.github_owner,
             repository=repository,
-            repo_limit=repo_limit,
-            branch_limit_per_repo=branch_limit,
-            module_limit_per_branch=module_limit,
+            repo_limit=_unlimited_if_zero(repo_limit),
+            branch_limit_per_repo=_unlimited_if_zero(branch_limit),
+            module_limit_per_branch=_unlimited_if_zero(module_limit),
             odoo_version=odoo_version,
             include_archived=include_archived,
             parse_manifests=not skip_manifest_parse,
@@ -326,6 +358,12 @@ def _discovery_payload(
         for branch in report.branches
     ]
     return payload
+
+
+def _unlimited_if_zero(value: int | None) -> int | None:
+    if value == 0:
+        return None
+    return value
 
 
 @app.command("index-source")

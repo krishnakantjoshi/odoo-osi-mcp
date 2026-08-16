@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     github_token: str | None = Field(default=None)
     github_owner: str = "OCA"
+    oca_apps_module_estimate: int | None = Field(
+        default=20000,
+        description="Rough external catalog estimate used only for coverage gap reporting.",
+    )
 
 
 @lru_cache

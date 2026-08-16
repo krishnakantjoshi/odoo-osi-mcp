@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from odoo_osi.core.config import get_settings
 from odoo_osi.db.session import AsyncSessionFactory
 from odoo_osi.mcp.services import (
     find_solution_payload,
+    get_coverage_report_payload,
     get_module_dependencies_payload,
     get_module_payload,
     search_code_payload,
@@ -106,6 +108,16 @@ def create_mcp_server() -> Any:
                 repository=repository,
                 module=module,
                 odoo_version=odoo_version,
+            )
+
+    @server.tool(description="Report local OCA index coverage, evidence depth, and catalog gaps.")
+    async def get_coverage_report(owner: str | None = None) -> dict[str, Any]:
+        settings = get_settings()
+        async with AsyncSessionFactory() as session:
+            return await get_coverage_report_payload(
+                session=session,
+                owner=owner or settings.github_owner,
+                catalog_module_estimate=settings.oca_apps_module_estimate,
             )
 
     @server.prompt(description="Check the indexed OCA ecosystem before custom Odoo development.")

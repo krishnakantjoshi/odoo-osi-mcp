@@ -6,6 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from odoo_osi.db.models import Module, Repository, SourceFile
 from odoo_osi.search.code import CodeSearchQuery, CodeSearchService
+from odoo_osi.search.coverage import coverage_report_payload
 from odoo_osi.search.modules import ModuleSearchQuery, ModuleSearchService
 from odoo_osi.search.solutions import SolutionService, solution_result_payload
 
@@ -186,6 +187,18 @@ async def get_module_dependencies_payload(
         "odoo_version": module_payload["odoo_version"],
         "dependencies": module_payload["dependencies"],
     }
+
+
+async def get_coverage_report_payload(
+    session: AsyncSession,
+    owner: str = "OCA",
+    catalog_module_estimate: int | None = 20000,
+) -> dict[str, Any]:
+    return await coverage_report_payload(
+        session=session,
+        owner=owner,
+        catalog_module_estimate=catalog_module_estimate,
+    )
 
 
 def _dependencies_payload(module: Module) -> list[dict[str, Any]]:

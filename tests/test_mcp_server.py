@@ -15,6 +15,7 @@ class McpServerTests(unittest.TestCase):
         self.assertIn("search_oca_code", tool_names)
         self.assertIn("get_oca_module", tool_names)
         self.assertIn("get_module_dependencies", tool_names)
+        self.assertIn("get_coverage_report", tool_names)
 
     def test_license_warnings_include_agpl_notice(self) -> None:
         warnings = _license_warnings("AGPL-3")
@@ -27,4 +28,3 @@ class McpServerTests(unittest.TestCase):
 
         self.assertEqual(len(warnings), 1)
         self.assertIn("missing", warnings[0])
-

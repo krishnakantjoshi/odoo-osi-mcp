@@ -24,12 +24,52 @@ with version rules, branding rules, exact files, and minimal tests.
 5. Require a file plan before code.
 6. Require minimal tests for the target Odoo version.
 
+## Coverage Check
+
+Before treating "no good candidate found" as proof that no OCA solution exists, check local
+index coverage.
+
+Use the MCP tool:
+
+```text
+Call get_coverage_report on the odoo-osi MCP server.
+
+Return:
+1. indexed repositories
+2. indexed Odoo version branches
+3. indexed modules
+4. source-indexed modules
+5. README-indexed modules
+6. security-rule-indexed modules
+7. latest discovery job counters
+8. latest source-indexing job counters
+9. GitHub discovery gap estimate
+10. external module catalog gap estimate
+11. limitations
+12. next indexing steps
+```
+
+Or use the local CLI/API:
+
+```bash
+odoo-osi coverage
+curl http://127.0.0.1:8000/indexing/coverage
+```
+
+Interpretation:
+
+- low indexed-module coverage means search results are useful but incomplete
+- `discovered_not_indexed` means "lead found, source not parsed yet"
+- broad OCA claims such as 20,000+ modules are catalog-scale signals, not proof that this
+  local database has parsed every module
+- before coding from an unindexed lead, run the returned `indexing_guidance`
+
 ## Prompt 1: Find Existing Solution
 
 Use this first.
 
 ```text
-Use the odoo-community MCP server.
+Use the odoo-osi MCP server.
 
 I am developing on Odoo <ODOO_VERSION> <EDITION>.
 
@@ -61,7 +101,7 @@ Do not generate custom code until the MCP result is reviewed.
 Example:
 
 ```text
-Use the odoo-community MCP server.
+Use the odoo-osi MCP server.
 
 I am developing on Odoo 18 Community.
 
@@ -332,7 +372,7 @@ Return:
 Copy this into the AI coding tool after MCP finds a module.
 
 ```text
-Use the odoo-community MCP result below as the primary reference.
+Use the odoo-osi MCP result below as the primary reference.
 
 MCP result:
 <PASTE_MCP_RESULT>
@@ -370,7 +410,7 @@ Important:
 Copy this into the AI coding tool when MCP finds no good module.
 
 ```text
-The odoo-community MCP server did not find a strong existing module.
+The odoo-osi MCP server did not find a strong existing module.
 
 MCP result:
 <PASTE_MCP_RESULT>
@@ -436,4 +476,3 @@ Suggested output:
 - exact file plan
 - minimal test plan
 - final prompt for the coding AI
-
