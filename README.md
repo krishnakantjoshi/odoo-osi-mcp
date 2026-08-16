@@ -41,7 +41,26 @@ uvicorn odoo_osi.api.app:create_app --factory --reload
 
 ## Local Credentials
 
-Put your GitHub API token for indexing in the local `.env` file:
+There are two different GitHub credentials you may use:
+
+- **GitHub personal access token**: used by Odoo OSI to call the GitHub API for indexing and
+  fallback search.
+- **SSH key**: used by git itself when you push or pull repositories over SSH.
+
+### GitHub API Token
+
+Create a fine-grained personal access token in GitHub:
+
+1. Open GitHub.
+2. Go to **Settings**.
+3. Open **Developer settings**.
+4. Open **Personal access tokens**.
+5. Choose **Fine-grained tokens**.
+6. Generate a new token.
+7. Use the minimum access needed. For public OCA indexing, read-only public repository access is
+   enough.
+
+Put that token in your local `.env` file:
 
 ```bash
 ODOO_OSI_GITHUB_TOKEN=YOUR_GITHUB_TOKEN
@@ -50,8 +69,30 @@ ODOO_OSI_GITHUB_TOKEN=YOUR_GITHUB_TOKEN
 `.env` is ignored by git. If your MCP client uses a private `mcp.json`, that file is ignored too.
 Do not put real tokens in `mcp.json.example`, docs, tests, or committed source.
 
-For git push/pull access, keep your SSH key outside the repo, usually in `~/.ssh`, and add the
-public key to your Git hosting provider.
+GitHub docs:
+
+- [Managing personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+
+### Git SSH Key
+
+For git push/pull access over SSH, keep your SSH key outside the repo, usually in `~/.ssh`, and
+add the public key to your Git hosting provider.
+
+On macOS/Linux:
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+```
+
+Copy the public key output and add it in GitHub under **Settings > SSH and GPG keys > New SSH key**.
+Never copy or commit the private key file.
+
+GitHub docs:
+
+- [Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
 The health endpoint is available at:
 
