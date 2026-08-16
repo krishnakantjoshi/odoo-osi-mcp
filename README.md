@@ -178,6 +178,91 @@ python -m ruff check .
 python -m pytest
 ```
 
+## Example Prompts
+
+After configuring the MCP server in your AI coding tool, try these prompts.
+
+### Check Index Coverage
+
+```text
+Use the odoo-osi MCP server.
+
+Before searching for modules, call get_coverage_report and summarize:
+1. how many modules are indexed
+2. how many modules have source evidence
+3. whether results should be treated as complete or partial
+4. what indexing step I should run next
+```
+
+### Find An Existing Module Before Custom Development
+
+```text
+Use the odoo-osi MCP server.
+
+I am developing on Odoo 18 Community.
+
+Requirement:
+I need a multi-level purchase approval workflow.
+
+Before writing custom code, check whether an existing open-source Odoo/OCA module satisfies
+this requirement.
+
+Return exact-version matches first, then older-version migration candidates, then discovered
+but not indexed candidates. Include module name, repository, license warning, evidence level,
+version status, migration effort, source evidence, README evidence, security-rule evidence,
+and indexing guidance.
+
+Do not generate custom code until I review the MCP result.
+```
+
+### Inspect A Candidate Module
+
+```text
+Use the odoo-osi MCP server.
+
+Inspect the module purchase_request from OCA/purchase-workflow for Odoo 18.0.
+
+Summarize:
+1. manifest metadata
+2. dependencies
+3. license warnings
+4. models and inherited models
+5. views, actions, and menus
+6. security access rules
+7. README evidence
+8. whether it is safe to use as implementation reference
+```
+
+### Search For A Code Pattern
+
+```text
+Use the odoo-osi MCP server.
+
+Search indexed OCA source for modules that extend purchase.order in Odoo 18.0.
+
+Return the repository, module, file path, symbol type, model name, inherited model, and any
+useful XML IDs.
+```
+
+### Prepare A Development Brief
+
+```text
+Use the odoo-osi MCP result as the primary reference.
+
+Target:
+- Odoo version: 18.0
+- Edition: Community
+- Organization/developer: Your Org
+- Technical module prefix: your_org
+- New module technical name: your_org_purchase_approval
+
+Produce a development brief, branding brief, exact file plan, and minimal test plan.
+Do not write code until the brief and file plan are approved.
+```
+
+For full prompt templates, see
+[AI Development Brief Guide](docs/ai-development-brief-guide.md).
+
 ## Troubleshooting
 
 - **Database connection fails**: run `docker compose up -d postgres redis`, then rerun

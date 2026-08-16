@@ -178,6 +178,68 @@ If Odoo 15 data is indexed, it should also show the 15.0 module as an
 
 - `check_before_custom_development`
 
+## Example Prompts
+
+### Coverage First
+
+```text
+Use the odoo-osi MCP server.
+
+Call get_coverage_report before searching. Tell me whether the local index is empty, manifest
+only, partially source-indexed, or source-indexed. Include the next indexing commands I should run.
+```
+
+### Find Existing Solution
+
+```text
+Use the odoo-osi MCP server.
+
+I am developing on Odoo 18 Community.
+
+Requirement:
+I need to prevent negative inventory.
+
+Before writing custom code, check whether an existing open-source Odoo/OCA module satisfies
+this requirement.
+
+Return exact-version matches first, older-version migration candidates next, and discovered but
+not indexed candidates last. Include license warnings, evidence level, version status, migration
+effort, source evidence, README evidence, security-rule evidence, and indexing guidance.
+```
+
+### Inspect A Module
+
+```text
+Use the odoo-osi MCP server.
+
+Inspect OCA/stock-logistics-workflow module stock_no_negative for Odoo 18.0.
+
+Return manifest metadata, dependencies, source files, parsed symbols, security access rules,
+README evidence, license warnings, and any implementation risks.
+```
+
+### Build Only After Review
+
+```text
+Use the odoo-osi MCP result below as the primary reference.
+
+MCP result:
+<PASTE_MCP_RESULT>
+
+Target:
+- Odoo version: 18.0
+- Edition: Community
+- Organization/developer: Your Org
+- Website: https://example.com
+- Technical module prefix: your_org
+- New module technical name: your_org_stock_control
+- License policy: proprietary_with_oca_review
+
+Decide whether to use, migrate, enhance, adapt, or build custom. Produce an implementation
+brief, branding brief, exact file plan, and minimal test plan. Do not write code until the
+brief and file plan are approved.
+```
+
 ## Development Briefs
 
 After MCP finds, partially finds, or does not find a module, use
