@@ -1,4 +1,4 @@
-# Odoo Open Source Intelligence - Development Plan
+# Odoo Open Source Intelligence - Roadmap
 
 ## 1. Product Definition
 

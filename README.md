@@ -110,9 +110,9 @@ POST /search/code
 POST /solutions/find
 ```
 
-## Product Plan
+## Roadmap
 
-See [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md).
+See [ROADMAP.md](ROADMAP.md).
 
 ## Ingestion
 
