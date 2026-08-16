@@ -26,18 +26,167 @@ This repository now has the first working backend and MCP vertical slice:
 - local PostgreSQL and Redis configuration
 - linting and test coverage
 
-## Local Development
+## Quick Start
+
+Follow these steps to run Odoo OSI locally from a fresh clone.
+
+### 1. Prerequisites
+
+Install:
+
+- Python 3.11 or newer
+- Docker and Docker Compose
+- Git
+- A GitHub personal access token for practical indexing and fallback search
+
+### 2. Clone The Repository
+
+```bash
+git clone https://github.com/krishnakantjoshi/odoo-osi-mcp.git
+cd odoo-osi-mcp
+```
+
+### 3. Create Local Configuration
 
 ```bash
 cp .env.example .env
-# edit .env and set ODOO_OSI_GITHUB_TOKEN to your own GitHub token
+```
+
+Open `.env` and set your own GitHub token:
+
+```bash
+ODOO_OSI_GITHUB_TOKEN=YOUR_GITHUB_TOKEN
+```
+
+`.env` is ignored by git. Do not commit real tokens.
+
+### 4. Start PostgreSQL And Redis
+
+```bash
 docker compose up -d postgres redis
+```
+
+### 5. Create A Python Environment
+
+```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev,mcp]"
+```
+
+On Windows PowerShell, activate the virtual environment with:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+### 6. Run Database Migrations
+
+```bash
 alembic upgrade head
+```
+
+### 7. Start The API Server
+
+```bash
 uvicorn odoo_osi.api.app:create_app --factory --reload
 ```
+
+Check the API:
+
+```bash
+curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8000/indexing/status
+```
+
+### 8. Discover And Index A Small Sample
+
+In another terminal, activate the virtual environment again:
+
+```bash
+source .venv/bin/activate
+```
+
+Discover module manifests from one OCA repository:
+
+```bash
+odoo-osi discover-oca \
+  --repository purchase-workflow \
+  --odoo-version 18.0 \
+  --branch-limit 1 \
+  --module-limit 20 \
+  --persist
+```
+
+Index source evidence for a small set of modules:
+
+```bash
+odoo-osi index-source \
+  --repository purchase-workflow \
+  --odoo-version 18.0 \
+  --module-limit 10 \
+  --file-limit 30
+```
+
+Check coverage:
+
+```bash
+odoo-osi coverage
+curl http://127.0.0.1:8000/indexing/coverage
+```
+
+### 9. Search For Modules
+
+```bash
+curl -X POST http://127.0.0.1:8000/solutions/find \
+  -H "Content-Type: application/json" \
+  -d '{"requirement":"multi level purchase approval","odoo_version":"18.0","limit":5}'
+```
+
+### 10. Run The MCP Server
+
+For a local MCP client, use stdio:
+
+```bash
+odoo-osi run-mcp
+```
+
+Most MCP clients use a config like this:
+
+```json
+{
+  "mcpServers": {
+    "odoo-osi": {
+      "command": "/absolute/path/to/odoo-osi-mcp/.venv/bin/odoo-osi",
+      "args": ["run-mcp"],
+      "cwd": "/absolute/path/to/odoo-osi-mcp",
+      "env": {
+        "ODOO_OSI_GITHUB_TOKEN": "REPLACE_WITH_YOUR_OWN_GITHUB_TOKEN"
+      }
+    }
+  }
+}
+```
+
+The same example is in [mcp.json.example](mcp.json.example). If your MCP client does not support
+`env`, put the token in your local `.env` instead.
+
+### 11. Run Tests
+
+```bash
+python -m ruff check .
+python -m pytest
+```
+
+## Troubleshooting
+
+- **Database connection fails**: run `docker compose up -d postgres redis`, then rerun
+  `alembic upgrade head`.
+- **GitHub rate limits**: set `ODOO_OSI_GITHUB_TOKEN` in `.env`.
+- **MCP client cannot find `odoo-osi`**: use the absolute path to `.venv/bin/odoo-osi` in your
+  MCP config.
+- **Search returns few results**: run discovery and source indexing first. A fresh database has
+  no indexed modules.
 
 ## Local Credentials
 
@@ -94,7 +243,9 @@ GitHub docs:
 
 - [Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
-The health endpoint is available at:
+## API Endpoints
+
+The health endpoint:
 
 ```text
 GET /health
